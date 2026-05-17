@@ -1,50 +1,64 @@
-# Welcome to your Expo app 👋
+# 🐾 PetFlow
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📱 Sobre o Projeto
+O **PetFlow** é um aplicativo mobile desenvolvido com React Native + Expo, com o objetivo de acompanhar o fluxo contínuo da saúde do pet.
 
-## Get started
+A aplicação busca resolver um problema comum: tutores só cuidam dos pets em situações de emergência. O PetFlow propõe uma abordagem preventiva, automatizando lembretes, histórico e rotina de cuidados.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🎯 Objetivo
+Criar uma solução digital que:
+- Lembre automaticamente cuidados (vacinas, remédios, check-ups)
+- Armazene o histórico do pet
+- Personalize a experiência com base no perfil do animal
+- Incentive uma rotina contínua de saúde
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🚀 Funcionalidades
 
-In the output, you'll find options to open the app in a
+- 📋 Cadastro de Pet
+- 🔔 Lembretes automáticos (vacina, medicamentos, check-up)
+- 📊 Histórico de saúde
+- 🐶 Perfil do Pet
+- 💾 Persistência de dados com AsyncStorage
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📱 Telas do Aplicativo
 
-## Get a fresh project
+- Home
+- Cadastro de Pet
+- Perfil do Pet
+- Lembretes
+- Histórico
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+## 🔄 Fluxo do App
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+1. Usuário abre o app  
+2. Cadastra seu pet  
+3. O app gera lembretes automáticos  
+4. O usuário acompanha a rotina do pet  
+5. Os dados ficam salvos mesmo após fechar o app  
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🛠️ Tecnologias Utilizadas
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- React Native
+- Expo
+- JavaScript
+- AsyncStorage
+- React Navigation
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## 💾 Armazenamento de Dados
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Os dados são armazenados localmente utilizando AsyncStorage:
+
+```js
+await AsyncStorage.setItem("pet", JSON.stringify(pet));
