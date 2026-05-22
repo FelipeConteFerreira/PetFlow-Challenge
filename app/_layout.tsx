@@ -19,8 +19,11 @@ export default function RootLayout() {
 
   useEffect(() => {
     getProfile().then((profile) => {
-      const inOnboarding = segments[0] === 'onboarding';
-      if (!profile.onboardingCompleted && !inOnboarding) {
+      const inOnboardingFlow =
+        segments[0] === 'onboarding' ||
+        segments[0] === 'cadastro-clinica' ||
+        segments[0] === 'cadastro-tutor';
+      if (!profile.onboardingCompleted && !inOnboardingFlow) {
         router.replace('/onboarding');
       }
       setChecked(true);
@@ -30,11 +33,16 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="cadastro-clinica" options={{ headerShown: false }} />
+        <Stack.Screen name="cadastro-tutor" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="cadastrar-pet" options={{ headerShown: false }} />
         <Stack.Screen name="cadastrar-lembrete" options={{ headerShown: false }} />
         <Stack.Screen name="editar-perfil" options={{ headerShown: false }} />
+        <Stack.Screen name="editar-perfil-clinica" options={{ headerShown: false }} />
+        <Stack.Screen name="cadastrar-veterinario" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />
