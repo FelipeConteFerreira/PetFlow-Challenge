@@ -16,6 +16,7 @@ import { ProfileMenuRow } from '@/components/profile-menu-row';
 import { PetFlowColors } from '@/constants/petflow';
 import { getPets } from '@/lib/pets-storage';
 import { clearAllAppData, getProfile } from '@/lib/profile-storage';
+import { getVeterinarians } from '@/lib/veterinarians-storage';
 import type { UserType } from '@/types/profile';
 import {
   countRemindersToday,
@@ -36,15 +37,19 @@ export default function ProfileScreen() {
   const [todayCount, setTodayCount] = useState(0);
   const [nextLabel, setNextLabel] = useState<string | null>(null);
   const [userType, setUserType] = useState<UserType | undefined>(undefined);
+  const [vetCount, setVetCount] = useState(0);
+  const [activeVetCount, setActiveVetCount] = useState(0);
 
   const load = useCallback(() => {
-    Promise.all([getProfile(), getPets(), getReminders()]).then(
-      ([prof, pets, reminders]) => {
+    Promise.all([getProfile(), getPets(), getReminders(), getVeterinarians()]).then(
+      ([prof, pets, reminders, vets]) => {
         setProfile(prof);
         setUserType(prof.userType);
         setPetCount(pets.length);
         setReminderCount(reminders.length);
         setTodayCount(countRemindersToday(reminders));
+        setVetCount(vets.length);
+        setActiveVetCount(vets.filter((v) => v.active).length);
         const next = getNextReminder(reminders);
         if (next) {
           const badge = getDateBadge(next.date);
@@ -62,8 +67,11 @@ export default function ProfileScreen() {
     }, [load])
   );
 
-  const displayName = profile?.name.trim() || 'Tutor';
-  const subtitle = [profile?.email, profile?.city].filter(Boolean).join(' · ');
+  const isClinica = userType === 'clinica';
+  const displayName = profile?.name.trim() || (isClinica ? 'Clínica' : 'Tutor');
+  const subtitle = isClinica
+    ? [profile?.email, profile?.city, profile?.clinicPhone].filter(Boolean).join(' · ')
+    : [profile?.email, profile?.city].filter(Boolean).join(' · ');
 
   const callPhone = (phone: string) => {
     const digits = phone.replace(/\D/g, '');
@@ -77,7 +85,9 @@ export default function ProfileScreen() {
   const handleDeleteAll = () => {
     Alert.alert(
       'Apagar todos os dados?',
-      'Pets, lembretes e perfil serão removidos deste aparelho. Essa ação não pode ser desfeita.',
+      isClinica
+        ? 'Veterinários, perfil e demais dados serão removidos deste aparelho. Essa ação não pode ser desfeita.'
+        : 'Pets, lembretes e perfil serão removidos deste aparelho. Essa ação não pode ser desfeita.',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -96,7 +106,9 @@ export default function ProfileScreen() {
   const showHelp = () => {
     Alert.alert(
       'Como usar o PetFlow',
-      '1. Cadastre seus pets\n2. Crie lembretes de vacinas e medicamentos\n3. Acompanhe tudo na Home\n\nSeus dados ficam salvos apenas neste celular.',
+      isClinica
+        ? '1. Complete os dados da clínica\n2. Cadastre os veterinários da equipe\n3. Gerencie ativos e contatos na aba Equipe\n\nSeus dados ficam salvos apenas neste celular.'
+        : '1. Cadastre seus pets\n2. Crie lembretes de vacinas e medicamentos\n3. Acompanhe tudo na Home\n\nSeus dados ficam salvos apenas neste celular.',
     );
   };
 
@@ -142,33 +154,71 @@ export default function ProfileScreen() {
           </View>
           <Pressable
             style={styles.editChip}
-            onPress={() => router.push('/editar-perfil')}>
-            <Feather name="edit-2" size={14} color={PetFlowColors.primary} />
-            <Text style={styles.editChipText}>Editar</Text>
+            onPress={() =>
+              router.push(isClinica ? '/editar-perfil-clinica' : '/editar-perfil')
+            }>
+            <Feather
+              name="edit-2"
+              size={14}
+              color={isClinica ? PetFlowColors.blue : PetFlowColors.primary}
+            />
+            <Text
+              style={[
+                styles.editChipText,
+                isClinica && styles.editChipTextClinica,
+              ]}>
+              Editar
+            </Text>
           </Pressable>
         </View>
 
-        <View style={styles.statsRow}>
-          <Pressable style={[styles.statCard, styles.statGreen]} onPress={() => router.push('/pets')}>
-            <MaterialCommunityIcons name="paw" size={20} color="#fff" />
-            <Text style={styles.statLabel}>Pets</Text>
-            <Text style={styles.statValue}>{petCount}</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.statCard, styles.statOrange]}
-            onPress={() => router.push('/reminders')}>
-            <Ionicons name="notifications" size={20} color="#fff" />
-            <Text style={styles.statLabel}>Lembretes</Text>
-            <Text style={styles.statValue}>{reminderCount}</Text>
-          </Pressable>
-          <View style={[styles.statCard, styles.statBlue]}>
-            <Ionicons name="calendar" size={20} color="#fff" />
-            <Text style={styles.statLabel}>Hoje</Text>
-            <Text style={styles.statValue}>{todayCount}</Text>
+        {isClinica ? (
+          <View style={styles.statsRow}>
+            <Pressable
+              style={[styles.statCard, styles.statBlue]}
+              onPress={() => router.push('/veterinarians')}>
+              <MaterialCommunityIcons name="stethoscope" size={20} color="#fff" />
+              <Text style={styles.statLabel}>Equipe</Text>
+              <Text style={styles.statValue}>{vetCount}</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.statCard, styles.statGreen]}
+              onPress={() => router.push('/veterinarians')}>
+              <MaterialCommunityIcons name="account-check" size={20} color="#fff" />
+              <Text style={styles.statLabel}>Ativos</Text>
+              <Text style={styles.statValue}>{activeVetCount}</Text>
+            </Pressable>
+            <View style={[styles.statCard, styles.statOrange]}>
+              <MaterialCommunityIcons name="map-marker" size={20} color="#fff" />
+              <Text style={styles.statLabel}>Cidade</Text>
+              <Text style={styles.statValueSmall} numberOfLines={1}>
+                {profile?.city?.trim() || '—'}
+              </Text>
+            </View>
           </View>
-        </View>
+        ) : (
+          <View style={styles.statsRow}>
+            <Pressable style={[styles.statCard, styles.statGreen]} onPress={() => router.push('/pets')}>
+              <MaterialCommunityIcons name="paw" size={20} color="#fff" />
+              <Text style={styles.statLabel}>Pets</Text>
+              <Text style={styles.statValue}>{petCount}</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.statCard, styles.statOrange]}
+              onPress={() => router.push('/reminders')}>
+              <Ionicons name="notifications" size={20} color="#fff" />
+              <Text style={styles.statLabel}>Lembretes</Text>
+              <Text style={styles.statValue}>{reminderCount}</Text>
+            </Pressable>
+            <View style={[styles.statCard, styles.statBlue]}>
+              <Ionicons name="calendar" size={20} color="#fff" />
+              <Text style={styles.statLabel}>Hoje</Text>
+              <Text style={styles.statValue}>{todayCount}</Text>
+            </View>
+          </View>
+        )}
 
-        {nextLabel ? (
+        {!isClinica && nextLabel ? (
           <View style={styles.nextCard}>
             <Ionicons name="time-outline" size={18} color={PetFlowColors.primary} />
             <View style={styles.nextText}>
@@ -178,7 +228,44 @@ export default function ProfileScreen() {
           </View>
         ) : null}
 
-        {(profile?.vetName || profile?.vetPhone) ? (
+        {isClinica && (profile?.clinicPhone || profile?.clinicAddress) ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Clínica</Text>
+            <View style={styles.menuCard}>
+              {profile.clinicPhone ? (
+                <Pressable
+                  style={styles.vetRow}
+                  onPress={() => callPhone(profile.clinicPhone!)}>
+                  <View style={styles.vetIcon}>
+                    <Feather name="phone" size={20} color={PetFlowColors.blue} />
+                  </View>
+                  <View style={styles.vetInfo}>
+                    <Text style={styles.vetLabel}>Telefone</Text>
+                    <Text style={styles.vetName}>{profile.clinicPhone}</Text>
+                  </View>
+                  <Feather name="phone" size={18} color={PetFlowColors.blue} />
+                </Pressable>
+              ) : null}
+              {profile.clinicAddress ? (
+                <Pressable style={[styles.vetRow, profile.clinicPhone && styles.vetBorder]}>
+                  <View style={styles.vetIcon}>
+                    <MaterialCommunityIcons
+                      name="map-marker"
+                      size={20}
+                      color={PetFlowColors.blue}
+                    />
+                  </View>
+                  <View style={styles.vetInfo}>
+                    <Text style={styles.vetLabel}>Endereço</Text>
+                    <Text style={styles.vetName}>{profile.clinicAddress}</Text>
+                  </View>
+                </Pressable>
+              ) : null}
+            </View>
+          </View>
+        ) : null}
+
+        {!isClinica && (profile?.vetName || profile?.vetPhone) ? (
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Saúde</Text>
             <View style={styles.menuCard}>
@@ -237,36 +324,60 @@ export default function ProfileScreen() {
           <View style={styles.menuCard}>
             <ProfileMenuRow
               icon="edit-2"
-              label="Editar perfil"
-              subtitle="Nome, vet e notificações"
-              onPress={() => router.push('/editar-perfil')}
+              label={isClinica ? 'Dados da clínica' : 'Editar perfil'}
+              subtitle={
+                isClinica ? 'Nome, contato e endereço' : 'Nome, vet e notificações'
+              }
+              onPress={() =>
+                router.push(isClinica ? '/editar-perfil-clinica' : '/editar-perfil')
+              }
             />
-            <View style={styles.divider} />
-            <ProfileMenuRow
-              icon="heart"
-              label="Meus pets"
-              subtitle={`${petCount} cadastrado${petCount !== 1 ? 's' : ''}`}
-              onPress={() => router.push('/pets')}
-            />
-            <View style={styles.divider} />
-            <ProfileMenuRow
-              icon="bell"
-              label="Lembretes"
-              subtitle={`${reminderCount} ativo${reminderCount !== 1 ? 's' : ''}`}
-              onPress={() => router.push('/reminders')}
-            />
-            <View style={styles.divider} />
-            <ProfileMenuRow
-              icon="plus-circle"
-              label="Cadastrar pet"
-              onPress={() => router.push('/cadastrar-pet')}
-            />
-            <View style={styles.divider} />
-            <ProfileMenuRow
-              icon="plus"
-              label="Novo lembrete"
-              onPress={() => router.push('/cadastrar-lembrete')}
-            />
+            {isClinica ? (
+              <>
+                <View style={styles.divider} />
+                <ProfileMenuRow
+                  icon="users"
+                  label="Equipe veterinária"
+                  subtitle={`${vetCount} cadastrado${vetCount !== 1 ? 's' : ''}`}
+                  onPress={() => router.push('/veterinarians')}
+                />
+                <View style={styles.divider} />
+                <ProfileMenuRow
+                  icon="plus-circle"
+                  label="Novo veterinário"
+                  onPress={() => router.push('/cadastrar-veterinario')}
+                />
+              </>
+            ) : (
+              <>
+                <View style={styles.divider} />
+                <ProfileMenuRow
+                  icon="heart"
+                  label="Meus pets"
+                  subtitle={`${petCount} cadastrado${petCount !== 1 ? 's' : ''}`}
+                  onPress={() => router.push('/pets')}
+                />
+                <View style={styles.divider} />
+                <ProfileMenuRow
+                  icon="bell"
+                  label="Lembretes"
+                  subtitle={`${reminderCount} ativo${reminderCount !== 1 ? 's' : ''}`}
+                  onPress={() => router.push('/reminders')}
+                />
+                <View style={styles.divider} />
+                <ProfileMenuRow
+                  icon="plus-circle"
+                  label="Cadastrar pet"
+                  onPress={() => router.push('/cadastrar-pet')}
+                />
+                <View style={styles.divider} />
+                <ProfileMenuRow
+                  icon="plus"
+                  label="Novo lembrete"
+                  onPress={() => router.push('/cadastrar-lembrete')}
+                />
+              </>
+            )}
           </View>
         </View>
 
@@ -276,10 +387,10 @@ export default function ProfileScreen() {
             <ProfileMenuRow icon="help-circle" label="Como usar" onPress={showHelp} />
             <View style={styles.divider} />
             <ProfileMenuRow
-              icon="refresh-cw"
-              label="Trocar tipo de perfil"
-              subtitle={userType === 'clinica' ? 'Clínica veterinária' : 'Tutor de pet'}
-              onPress={() => router.push('/onboarding')}
+              icon="repeat"
+              label="Tutor ou Clínica"
+              subtitle="Voltar e escolher outro tipo de perfil"
+              onPress={() => router.replace('/onboarding')}
             />
             <View style={styles.divider} />
             <View style={styles.aboutRow}>
@@ -301,7 +412,9 @@ export default function ProfileScreen() {
             <ProfileMenuRow
               icon="trash-2"
               label="Apagar todos os dados"
-              subtitle="Pets, lembretes e perfil"
+              subtitle={
+                isClinica ? 'Veterinários, perfil e dados' : 'Pets, lembretes e perfil'
+              }
               onPress={handleDeleteAll}
               danger
             />
@@ -406,6 +519,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: PetFlowColors.primary,
+  },
+  editChipTextClinica: {
+    color: PetFlowColors.blue,
+  },
+  statValueSmall: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#fff',
   },
   statsRow: {
     flexDirection: 'row',
