@@ -10,15 +10,21 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+<<<<<<< HEAD
 import { ChooseProfileTypeButton } from '@/components/choose-profile-type-button';
 import { ClinicaHome } from '@/components/clinica-home';
+=======
+>>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
 import { ReminderCard } from '@/components/reminder-card';
 import { PetFlowColors } from '@/constants/petflow';
 import { getProfile } from '@/lib/profile-storage';
 import { getPets } from '@/lib/pets-storage';
+<<<<<<< HEAD
 import { getVeterinarians } from '@/lib/veterinarians-storage';
 import type { UserType } from '@/types/profile';
 import type { Veterinarian } from '@/types/veterinarian';
+=======
+>>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
 import {
   countRemindersToday,
   getNextReminder,
@@ -35,6 +41,7 @@ export default function HomeScreen() {
   const [nextReminder, setNextReminder] = useState<Reminder | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [tutorName, setTutorName] = useState('');
+<<<<<<< HEAD
   const [userType, setUserType] = useState<UserType | undefined>(undefined);
   const [vets, setVets] = useState<Veterinarian[]>([]);
 
@@ -46,6 +53,15 @@ export default function HomeScreen() {
         setTutorName(profile.name.trim());
         setPets(petList);
         setVets(vetList);
+=======
+
+  useFocusEffect(
+    useCallback(() => {
+      Promise.all([getProfile(), getPets(), getReminders()]).then(
+        ([profile, petList, reminders]) => {
+        setTutorName(profile.name.trim());
+        setPets(petList);
+>>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
         setPetCount(petList.length);
         setReminderCount(reminders.length);
         setTodayCount(countRemindersToday(reminders));
@@ -55,6 +71,7 @@ export default function HomeScreen() {
     }, [])
   );
 
+<<<<<<< HEAD
   if (userType === 'clinica') {
     const activeCount = vets.filter((v) => v.active).length;
     const recentVets = [...vets]
@@ -70,6 +87,8 @@ export default function HomeScreen() {
     );
   }
 
+=======
+>>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
   const greeting = tutorName ? `Olá, ${tutorName}!` : 'Olá, tutor!';
 
   const nextPetSubtitle = nextReminder
@@ -173,8 +192,11 @@ export default function HomeScreen() {
             <Text style={styles.actionText}>Lembrete</Text>
           </Pressable>
         </View>
+<<<<<<< HEAD
 
         <ChooseProfileTypeButton variant="outline" accent="green" spacingTop />
+=======
+>>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
       </ScrollView>
     </SafeAreaView>
   );

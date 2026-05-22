@@ -1,4 +1,6 @@
+
 export type UserType = 'tutor' | 'clinica';
+
 
 export type TutorProfile = {
   name: string;
@@ -12,6 +14,7 @@ export type TutorProfile = {
   vetPhone: string;
   emergencyName: string;
   emergencyPhone: string;
+
   clinicPhone?: string;
   clinicAddress?: string;
   password?: string;
@@ -19,6 +22,7 @@ export type TutorProfile = {
   apiClinicaId?: number;
   userType?: UserType;
   onboardingCompleted?: boolean;
+
 };
 
 export const DEFAULT_PROFILE: TutorProfile = {
@@ -33,8 +37,10 @@ export const DEFAULT_PROFILE: TutorProfile = {
   vetPhone: '',
   emergencyName: '',
   emergencyPhone: '',
+
   userType: undefined,
   onboardingCompleted: false,
+
 };
 
 export const AVATAR_OPTIONS = ['🐾', '🐕', '🐈', '😊', '🌿', '💚'];
