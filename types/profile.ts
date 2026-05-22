@@ -12,6 +12,11 @@ export type TutorProfile = {
   vetPhone: string;
   emergencyName: string;
   emergencyPhone: string;
+  clinicPhone?: string;
+  clinicAddress?: string;
+  password?: string;
+  apiUserId?: number;
+  apiClinicaId?: number;
   userType?: UserType;
   onboardingCompleted?: boolean;
 };

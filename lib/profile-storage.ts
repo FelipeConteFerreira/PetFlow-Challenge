@@ -26,8 +26,10 @@ export async function setOnboardingCompleted(userType: 'tutor' | 'clinica'): Pro
 export async function clearAllAppData(): Promise<void> {
   const keys = [
     STORAGE_KEY,
+    '@petflow/auth',
     '@petflow/pets',
     '@petflow/reminders',
+    '@petflow/veterinarians',
   ];
   await AsyncStorage.multiRemove(keys);
 }
