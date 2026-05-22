@@ -10,21 +10,15 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-<<<<<<< HEAD
 import { ChooseProfileTypeButton } from '@/components/choose-profile-type-button';
 import { ClinicaHome } from '@/components/clinica-home';
-=======
->>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
 import { ReminderCard } from '@/components/reminder-card';
 import { PetFlowColors } from '@/constants/petflow';
 import { getProfile } from '@/lib/profile-storage';
 import { getPets } from '@/lib/pets-storage';
-<<<<<<< HEAD
 import { getVeterinarians } from '@/lib/veterinarians-storage';
 import type { UserType } from '@/types/profile';
 import type { Veterinarian } from '@/types/veterinarian';
-=======
->>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
 import {
   countRemindersToday,
   getNextReminder,
@@ -41,7 +35,6 @@ export default function HomeScreen() {
   const [nextReminder, setNextReminder] = useState<Reminder | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [tutorName, setTutorName] = useState('');
-<<<<<<< HEAD
   const [userType, setUserType] = useState<UserType | undefined>(undefined);
   const [vets, setVets] = useState<Veterinarian[]>([]);
 
@@ -49,29 +42,19 @@ export default function HomeScreen() {
     useCallback(() => {
       Promise.all([getProfile(), getPets(), getReminders(), getVeterinarians()]).then(
         ([profile, petList, reminders, vetList]) => {
-        setUserType(profile.userType);
-        setTutorName(profile.name.trim());
-        setPets(petList);
-        setVets(vetList);
-=======
-
-  useFocusEffect(
-    useCallback(() => {
-      Promise.all([getProfile(), getPets(), getReminders()]).then(
-        ([profile, petList, reminders]) => {
-        setTutorName(profile.name.trim());
-        setPets(petList);
->>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
-        setPetCount(petList.length);
-        setReminderCount(reminders.length);
-        setTodayCount(countRemindersToday(reminders));
-        setNextReminder(getNextReminder(reminders));
-      }
+          setUserType(profile.userType);
+          setTutorName(profile.name.trim());
+          setPets(petList);
+          setVets(vetList);
+          setPetCount(petList.length);
+          setReminderCount(reminders.length);
+          setTodayCount(countRemindersToday(reminders));
+          setNextReminder(getNextReminder(reminders));
+        }
       );
     }, [])
   );
 
-<<<<<<< HEAD
   if (userType === 'clinica') {
     const activeCount = vets.filter((v) => v.active).length;
     const recentVets = [...vets]
@@ -87,8 +70,6 @@ export default function HomeScreen() {
     );
   }
 
-=======
->>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
   const greeting = tutorName ? `Olá, ${tutorName}!` : 'Olá, tutor!';
 
   const nextPetSubtitle = nextReminder
@@ -192,28 +173,17 @@ export default function HomeScreen() {
             <Text style={styles.actionText}>Lembrete</Text>
           </Pressable>
         </View>
-<<<<<<< HEAD
 
         <ChooseProfileTypeButton variant="outline" accent="green" spacingTop />
-=======
->>>>>>> f187c96139bc99a2ecc67014ba9ca9264a5a3f35
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: PetFlowColors.background,
-  },
-  scroll: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: 20,
-    paddingBottom: 24,
-  },
+  safe: { flex: 1, backgroundColor: PetFlowColors.background },
+  scroll: { flex: 1 },
+  content: { paddingHorizontal: 20, paddingBottom: 24 },
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -221,143 +191,43 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 20,
   },
-  headerText: {
-    flex: 1,
-    paddingRight: 12,
-  },
-  brand: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: PetFlowColors.primary,
-    letterSpacing: -0.5,
-  },
-  greeting: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: PetFlowColors.text,
-    marginTop: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: PetFlowColors.textSecondary,
-    marginTop: 4,
-  },
+  headerText: { flex: 1, paddingRight: 12 },
+  brand: { fontSize: 26, fontWeight: '800', color: PetFlowColors.primary, letterSpacing: -0.5 },
+  greeting: { fontSize: 22, fontWeight: '700', color: PetFlowColors.text, marginTop: 4 },
+  subtitle: { fontSize: 14, color: PetFlowColors.textSecondary, marginTop: 4 },
   profileButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 48, height: 48, borderRadius: 24,
     backgroundColor: PetFlowColors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
   },
-  statsRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
-    borderRadius: 16,
-    padding: 14,
-    minHeight: 100,
-    justifyContent: 'space-between',
-  },
-  statGreen: {
-    backgroundColor: PetFlowColors.primary,
-  },
-  statOrange: {
-    backgroundColor: PetFlowColors.orange,
-  },
-  statBlue: {
-    backgroundColor: PetFlowColors.blue,
-  },
-  statLabel: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '500',
-    marginTop: 8,
-  },
-  statValue: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#fff',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: PetFlowColors.text,
-  },
+  statsRow: { flexDirection: 'row', gap: 10, marginBottom: 24 },
+  statCard: { flex: 1, borderRadius: 16, padding: 14, minHeight: 100, justifyContent: 'space-between' },
+  statGreen: { backgroundColor: PetFlowColors.primary },
+  statOrange: { backgroundColor: PetFlowColors.orange },
+  statBlue: { backgroundColor: PetFlowColors.blue },
+  statLabel: { fontSize: 13, color: 'rgba(255,255,255,0.9)', fontWeight: '500', marginTop: 8 },
+  statValue: { fontSize: 28, fontWeight: '800', color: '#fff' },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: PetFlowColors.text },
   emptyReminder: {
-    backgroundColor: PetFlowColors.card,
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: PetFlowColors.border,
-    marginBottom: 16,
-    alignItems: 'center',
+    backgroundColor: PetFlowColors.card, borderRadius: 16, padding: 20,
+    borderWidth: 1, borderColor: PetFlowColors.border, marginBottom: 16, alignItems: 'center',
   },
-  emptyReminderText: {
-    fontSize: 14,
-    color: PetFlowColors.textSecondary,
-    textAlign: 'center',
-  },
+  emptyReminderText: { fontSize: 14, color: PetFlowColors.textSecondary, textAlign: 'center' },
   aiCard: {
-    backgroundColor: PetFlowColors.aiBg,
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: PetFlowColors.aiBorder,
-    marginBottom: 20,
-    gap: 12,
+    backgroundColor: PetFlowColors.aiBg, borderRadius: 16, padding: 16,
+    borderWidth: 1, borderColor: PetFlowColors.aiBorder, marginBottom: 20, gap: 12,
   },
-  aiHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 4,
-  },
-  aiTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: PetFlowColors.primaryDark,
-  },
-  aiItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  aiItemText: {
-    fontSize: 14,
-    color: PetFlowColors.text,
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
+  aiHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  aiTitle: { fontSize: 15, fontWeight: '700', color: PetFlowColors.primaryDark },
+  aiItem: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  aiItemText: { fontSize: 14, color: PetFlowColors.text },
+  actionsRow: { flexDirection: 'row', gap: 12 },
   actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 16,
-    borderRadius: 14,
+    flex: 1, flexDirection: 'row', alignItems: 'center',
+    justifyContent: 'center', gap: 8, paddingVertical: 16, borderRadius: 14,
   },
-  actionGreen: {
-    backgroundColor: PetFlowColors.primary,
-  },
-  actionBlue: {
-    backgroundColor: PetFlowColors.blue,
-  },
-  actionText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#fff',
-  },
+  actionGreen: { backgroundColor: PetFlowColors.primary },
+  actionBlue: { backgroundColor: PetFlowColors.blue },
+  actionText: { fontSize: 15, fontWeight: '700', color: '#fff' },
 });
