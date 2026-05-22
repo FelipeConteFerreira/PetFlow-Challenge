@@ -116,7 +116,7 @@ Dados persistidos:
 | 2 | Protótipo visual completo com fluxo lógico | ✅ |
 | 3 | Formulário com manipulação de estado (useState) | ✅ 7 formulários |
 | 4 | Armazenamento local com AsyncStorage | ✅ 5 storages |
-| 5 | Demonstração em vídeo narrada | 🎬 [Assistir no YouTube](<LINK_DO_VIDEO>) |
+| 5 | Demonstração em vídeo narrada | 🎬  LINK YT |
 
 ---
 
@@ -136,4 +136,4 @@ Escaneie o QR Code com o app **Expo Go** (Android/iOS) ou rode em um emulador.
 
 ## 👥 Equipe
 
-Desenvolvido por **[Nome da Equipe]** — FIAP 2025.
+Desenvolvido por **PetFlow** — FIAP 2026.
