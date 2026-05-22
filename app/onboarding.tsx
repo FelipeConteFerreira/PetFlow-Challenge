@@ -11,7 +11,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PetFlowColors } from '@/constants/petflow';
-import { getProfile, saveProfile } from '@/lib/profile-storage';
 import type { UserType } from '@/types/profile';
 
 type Option = {
@@ -47,10 +46,10 @@ const OPTIONS: Option[] = [
     title: 'Sou Clínica',
     subtitle: 'Atendo e cuido de vários pets',
     features: [
-      'Gerencie múltiplos pacientes',
-      'Organize agendamentos e retornos',
-      'Controle vacinas e medicamentos',
-      'Comunique-se com os tutores',
+      'Cadastre sua equipe veterinária',
+      'Gerencie veterinários ativos',
+      'Dados e contato da clínica',
+      'Pacientes e agendamentos em breve',
     ],
     color: '#4A90D9',
     bgColor: '#EBF4FC',
@@ -61,26 +60,19 @@ const OPTIONS: Option[] = [
 export default function OnboardingScreen() {
   const router = useRouter();
   const [selected, setSelected] = useState<UserType | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const handleContinue = async () => {
     if (!selected) {
       Alert.alert('Selecione um perfil', 'Escolha como você vai usar o PetFlow.');
       return;
     }
-    setLoading(true);
-    try {
-      const profile = await getProfile();
-      await saveProfile({
-        ...profile,
-        userType: selected,
-        onboardingCompleted: true,
-      });
-      router.replace('/(tabs)');
-    } catch {
-      Alert.alert('Erro', 'Não foi possível salvar sua escolha. Tente novamente.');
-    } finally {
-      setLoading(false);
+    if (selected === 'clinica') {
+      router.push('/cadastro-clinica');
+      return;
+    }
+    if (selected === 'tutor') {
+      router.push('/cadastro-tutor');
+      return;
     }
   };
 
@@ -184,15 +176,22 @@ export default function OnboardingScreen() {
               selected === 'clinica' && { backgroundColor: '#4A90D9' },
             ]}
             onPress={handleContinue}
-            disabled={loading}
           >
             <MaterialCommunityIcons name="arrow-right" size={20} color="#fff" />
             <Text style={styles.continueText}>
-              {loading ? 'Entrando...' : 'Continuar'}
+              {selected === 'clinica'
+                ? 'Cadastrar clínica'
+                : selected === 'tutor'
+                  ? 'Cadastrar tutor'
+                  : 'Continuar'}
             </Text>
           </Pressable>
           <Text style={styles.footerNote}>
-            Você poderá alterar isso depois no seu perfil.
+            {selected === 'clinica'
+              ? 'Na próxima etapa você cria a conta da clínica.'
+              : selected === 'tutor'
+                ? 'Na próxima etapa você cria sua conta de tutor.'
+                : 'Escolha Tutor ou Clínica para continuar.'}
           </Text>
         </View>
       </View>
