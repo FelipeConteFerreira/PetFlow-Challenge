@@ -116,7 +116,7 @@ Dados persistidos:
 | 2 | Protótipo visual completo com fluxo lógico | ✅ |
 | 3 | Formulário com manipulação de estado (useState) | ✅ 7 formulários |
 | 4 | Armazenamento local com AsyncStorage | ✅ 5 storages |
-| 5 | Demonstração em vídeo narrada | 🎬  LINK YT |
+| 5 | Demonstração em vídeo narrada | 🎬  https://youtu.be/uzRVg26eQHQ |
 
 ---
 
